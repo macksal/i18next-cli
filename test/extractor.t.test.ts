@@ -25,6 +25,12 @@ describe('extractor: advanced t features', () => {
   beforeEach(async () => {
     vol.reset()
     vi.clearAllMocks()
+    // `extract()` defaults `primaryLanguage`/`secondaryLanguages` on the
+    // config object via `||=`. Tests share `mockConfig` (and shallow-copy its
+    // `extract` field), so leftover values from earlier tests would otherwise
+    // carry into later ones with different `locales`.
+    delete mockConfig.extract.primaryLanguage
+    delete mockConfig.extract.secondaryLanguages
     const { glob } = await import('glob')
       ;(glob as any).mockResolvedValue(['/src/App.tsx'])
   })
