@@ -1162,8 +1162,12 @@ export async function getTranslations (
     ? config.extract.ignore
     : config.extract.ignore ? [config.extract.ignore] : []
 
-  // Process each locale one by one
-  for (const locale of config.locales) {
+  // Process each locale one by one. Iterate the primary plus the configured
+  // secondary languages (rather than `config.locales`) so users can opt out of
+  // having empty placeholder entries written into non-primary files — for
+  // example by setting `extract.secondaryLanguages: []` when those files are
+  // managed entirely by an external sync (Locize, etc.).
+  for (const locale of [primaryLanguage, ...config.extract.secondaryLanguages]) {
     // If output is a string we can detect the presence of the namespace placeholder.
     // If it's a function we cannot reliably detect that here — default to not merged
     // unless mergeNamespaces is explicitly true.
